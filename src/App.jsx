@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import React from 'react'
 import './App.css'
+import Api from "./components/Api.jsx"
 
 function App() {
   return (
-  <h1>hy</h1>
+  <Api />
   )
 
 
