@@ -8,14 +8,3 @@ export const fetchShowGenreData = async (genreId) => {
     throw error;
   }
   }
-
-  export const fetchShowDetails = async (showId) => {
-    try {
-      const response = await fetch(`https://podcast-api.netlify.app/id/${showId}`);
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(`Could not fetch show details for ID ${showId}:`, error);
-      throw error;
-    }
-  };
