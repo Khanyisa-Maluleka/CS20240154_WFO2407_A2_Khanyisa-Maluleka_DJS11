@@ -1,116 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchShowDetails } from '../utils/api';
-import { formatDate } from '../utils/sorting';
-import { useAudio } from '../context/AudioContext';
-import { useFavourites } from '../context/FavouritesContext';
-import LoadingSpinner from '../components/LoadingSpinner';
+// src/components/ShowDetails.jsx
+import React, { useState } from 'react';
+import AudioPlayer from './AudioPlayer';
 
-function ShowPage() {
-  const { id } = useParams();
-  const [show, setShow] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedSeason, setSelectedSeason] = useState(null);
-  const { playEpisode } = useAudio();
-  const { addFavourite, favourites, removeFavourite } = useFavourites();
-
-  useEffect(() => {
-    const loadShowDetails = async () => {
-      try {
-        const details = await fetchShowDetails(id);
-        setShow(details);
-        setSelectedSeason(details.seasons[0]);
-      } catch (error) {
-        console.error('Failed to load show details', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadShowDetails();
-  }, [id]);
-
-  if (loading) return <LoadingSpinner />;
-  if (!show) return <div>Show not found</div>;
-
-  const isFavourite = (episodeId) => 
-    favourites.some(fav => fav.id === episodeId);
-
-  const toggleFavourite = (episode) => {
-    if (isFavourite(episode.id)) {
-      removeFavourite(episode.id);
-    } else {
-      addFavourite(episode);
-    }
-  };
+const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
+  const [selectedSeason, setSelectedSeason] = useState(show.seasons[0]);
 
   return (
-    <div className="show-details-container">
-      <div className="show-header">
+    <div className="container mx-auto p-4">
+      <div className="flex">
         <img 
           src={show.image} 
           alt={show.title} 
-          className="show-large-image" 
+          className="w-1/3 mr-4 rounded-lg"
         />
-        <div className="show-info">
-          <h1>{show.title}</h1>
-          <p>Last Updated: {formatDate(show.updated)}</p>
-          <div className="show-genres">
-            {show.genres.map(genre => (
-              <span key={genre} className="genre-tag">{genre}</span>
-            ))}
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold">{show.title}</h1>
           <p>{show.description}</p>
         </div>
       </div>
 
-      <div className="seasons-selector">
-        <h2>Seasons ({show.seasons.length})</h2>
-        <div className="season-buttons">
+      <div className="mt-4">
+        <h2 className="text-2xl mb-2">Seasons</h2>
+        <div className="flex space-x-2 mb-4">
           {show.seasons.map(season => (
-            <button 
+            <button
               key={season.id}
               onClick={() => setSelectedSeason(season)}
-              className={selectedSeason?.id === season.id ? 'active' : ''}
+              className={`px-4 py-2 rounded ${
+                selectedSeason.id === season.id 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-200'
+              }`}
             >
               Season {season.number}
             </button>
           ))}
         </div>
-      </div>
 
-      {selectedSeason && (
-        <div className="season-episodes">
-          <h2>Season {selectedSeason.number} Episodes</h2>
-          <div className="episodes-grid">
-            {selectedSeason.episodes.map(episode => (
-              <div key={episode.id} className="episode-card">
-                <img 
-                  src={selectedSeason.image} 
-                  alt={episode.title} 
-                />
-                <div className="episode-details">
-                  <h3>{episode.title}</h3>
-                  <p>{episode.description}</p>
-                  <div className="episode-actions">
-                    <button onClick={() => playEpisode(episode)}>
-                      Play Episode
-                    </button>
-                    <button 
-                      onClick={() => toggleFavourite(episode)}
-                      className={isFavourite(episode.id) ? 'favourite-active' : ''}
-                    >
-                      {isFavourite(episode.id) ? 'Remove Favourite' : 'Add Favourite'}
-                    </button>
-                  </div>
-                </div>
+        <div>
+          <h3 className="text-xl mb-2">Episodes</h3>
+          {selectedSeason.episodes.map(episode => (
+            <div 
+              key={episode.id} 
+              className="flex justify-between items-center p-2 border-b"
+            >
+              <span>{episode.title}</span>
+              <div>
+                <button 
+                  onClick={() => onPlayEpisode(episode)}
+                  className="mr-2 bg-green-500 text-white px-3 py-1 rounded"
+                >
+                  Play
+                </button>
+                <button 
+                  onClick={() => onAddToFavourites(episode)}
+                  className="bg-yellow-500 text-white px-3 py-1 rounded"
+                >
+                  Favourite
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
-}
+};
 
-export default ShowPage;
+export default ShowDetails;

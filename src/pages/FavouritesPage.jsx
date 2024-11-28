@@ -1,56 +1,70 @@
+// src/pages/FavouritesPage.jsx
 import React, { useState } from 'react';
 import { useFavourites } from '../context/FavouritesContext';
-import { useAudio } from '../context/AudioContext';
-import { formatDateTime } from '../utils/sorting';
 
-function FavouritesPage() {
-  const { favourites, removeFavourite, sortFavourites } = useFavourites();
-  const { playEpisode } = useAudio();
-  const [sortOption, setSortOption] = useState('recent');
+const FavouritesPage = () => {
+  const { favourites, removeFromFavourites } = useFavourites();
+  const [sortOption, setSortOption] = useState('default');
 
-  const handleSort = (option) => {
-    setSortOption(option);
-    sortFavourites(option);
-  };
+  const sortedFavourites = React.useMemo(() => {
+    switch(sortOption) {
+      case 'titleAsc':
+        return [...favourites].sort((a, b) => a.title.localeCompare(b.title));
+      case 'titleDesc':
+        return [...favourites].sort((a, b) => b.title.localeCompare(a.title));
+      case 'recentlyAdded':
+        return [...favourites].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+      default:
+        return favourites;
+    }
+  }, [favourites, sortOption]);
 
   return (
-    <div className="favourites-page">
-      <h1>My Favourite Episodes</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Favourites</h1>
       
-      <div className="sort-controls">
-        <label>Sort By:</label>
+      <div className="mb-4">
+        <label htmlFor="sort" className="mr-2">Sort by:</label>
         <select 
+          id="sort" 
           value={sortOption} 
-          onChange={(e) => handleSort(e.target.value)}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="p-2 border rounded"
         >
-          <option value="recent">Most Recently Added</option>
-          <option value="oldest">Least Recently Added</option>
-          <option value="az">A-Z</option>
-          <option value="za">Z-A</option>
+          <option value="default">Default</option>
+          <option value="titleAsc">Title (A-Z)</option>
+          <option value="titleDesc">Title (Z-A)</option>
+          <option value="recentlyAdded">Recently Added</option>
         </select>
       </div>
 
-      <div className="favourites-list">
-        {favourites.map(episode => (
-          <div key={episode.id} className="favourite-item">
-            <div className="episode-details">
-              <h3>{episode.title}</h3>
-              <p>Added: {formatDateTime(episode.addedAt)}</p>
-            </div>
-            <div className="episode-actions">
-              <button onClick={() => playEpisode(episode)}>
-                Play Episode
-              </button>
+      {sortedFavourites.length === 0 ? (
+        <p className="text-gray-500">No favourites yet</p>
+      ) : (
+        <div className="space-y-4">
+          {sortedFavourites.map(episode => (
+            <div 
+              key={episode.id} 
+              className="flex justify-between items-center p-4 border rounded"
+            >
+              <div>
+                <h3 className="font-bold">{episode.title}</h3>
+                <p className="text-sm text-gray-600">
+                  Added: {new Date(episode.addedAt).toLocaleString()}
+                </p>
+              </div>
               <button 
-                onClick={() => removeFavourite(episode.id)}
-                className="remove-favourite"
+                onClick={() => removeFromFavourites(episode.id)}
+                className="bg-red-500 text-white px-4 py-2 rounded"
               >
                 Remove
               </button>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default FavouritesPage;

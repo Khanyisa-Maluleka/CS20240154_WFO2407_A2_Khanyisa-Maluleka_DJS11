@@ -1,25 +1,21 @@
+// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  fetchPreviews 
-} from '../utils/api';
-import { 
-  sortShowsAlphabetically, 
-  sortShowsByUpdateTime,
-  formatDate 
-} from '../utils/sorting';
+import { fetchPreviews } from '../utils/api';
+import { sortShowsAlphabetically, sortShowsByUpdateDate } from '../utils/sorting';
+import ShowPreview from '../components/ShowPreview';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-function HomePage() {
+const HomePage = () => {
   const [shows, setShows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [sortOption, setSortOption] = useState('recent');
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortOption, setSortOption] = useState('default');
 
   useEffect(() => {
     const loadShows = async () => {
+      setIsLoading(true);
       const previews = await fetchPreviews();
       setShows(previews);
-      setLoading(false);
+      setIsLoading(false);
     };
 
     loadShows();
@@ -28,73 +24,56 @@ function HomePage() {
   const handleSort = (option) => {
     setSortOption(option);
     let sortedShows;
-
     switch(option) {
-      case 'az':
-        sortedShows = sortShowsAlphabetically(shows);
+      case 'titleAsc':
+        sortedShows = sortShowsAlphabetically(shows, true);
         break;
-      case 'za':
+      case 'titleDesc':
         sortedShows = sortShowsAlphabetically(shows, false);
         break;
-      case 'oldest':
-        sortedShows = sortShowsByUpdateTime(shows, false);
+      case 'recentlyUpdated':
+        sortedShows = sortShowsByUpdateDate(shows, true);
         break;
-      case 'recent':
+      case 'oldestUpdated':
+        sortedShows = sortShowsByUpdateDate(shows, false);
+        break;
       default:
-        sortedShows = sortShowsByUpdateTime(shows);
+        sortedShows = shows;
     }
-
     setShows(sortedShows);
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (isLoading) {
+    return <LoadingSpinner text="Loading Podcasts..." />;
+  }
 
   return (
-    <div className="home-page">
-      <h1>Podcast Shows</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Podcast Shows</h1>
       
-      <div className="sort-controls">
-        <label>Sort By:</label>
+      <div className="mb-4">
+        <label htmlFor="sort" className="mr-2">Sort by:</label>
         <select 
+          id="sort" 
           value={sortOption} 
           onChange={(e) => handleSort(e.target.value)}
+          className="p-2 border rounded"
         >
-          <option value="recent">Most Recently Updated</option>
-          <option value="oldest">Least Recently Updated</option>
-          <option value="az">A-Z</option>
-          <option value="za">Z-A</option>
+          <option value="default">Default</option>
+          <option value="titleAsc">Title (A-Z)</option>
+          <option value="titleDesc">Title (Z-A)</option>
+          <option value="recentlyUpdated">Recently Updated</option>
+          <option value="oldestUpdated">Oldest Updated</option>
         </select>
       </div>
 
-      <div className="shows-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {shows.map(show => (
-          <Link 
-            to={`/show/${show.id}`} 
-            key={show.id} 
-            className="show-preview"
-          >
-            <img 
-              src={show.image} 
-              alt={show.title} 
-              className="show-image"
-            />
-            <div className="show-details">
-              <h2>{show.title}</h2>
-              <p>Seasons: {show.seasons}</p>
-              <p>Updated: {formatDate(show.updated)}</p>
-              <div className="show-genres">
-                {show.genres && show.genres.map(genre => (
-                  <span key={genre} className="genre-tag">
-                    {genre}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Link>
+          <ShowPreview key={show.id} show={show} />
         ))}
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;

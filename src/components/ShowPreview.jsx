@@ -1,31 +1,26 @@
-import { useState, useEffect } from 'react';
+// src/components/ShowPreview.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const ShowPreview = () => {
-  const [showPreviews, setShowPreviews] = useState([]);
-
-  useEffect(() => {
-    const fetchShowPreviews = async () => {
-      try {
-        const response = await fetch('https://podcast-api.netlify.app');
-        const data = await response.json();
-        setShowPreviews(data);
-      } catch (error) {
-        console.error('Error fetching show previews:', error);
-      }
-    };
-    fetchShowPreviews();
-  }, []);
-
+const ShowPreview = ({ show }) => {
   return (
-    <div>
-      {showPreviews.map((show) => (
-        <div key={show.id}>
-          <h2>{show.title}</h2>
-          <p>{show.description}</p>
-          <img src={show.image} alt={show.title} />
+    <Link 
+      to={`/show/${show.id}`} 
+      className="block border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+    >
+      <img 
+        src={show.image} 
+        alt={show.title} 
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-4">
+        <h2 className="text-xl font-bold mb-2">{show.title}</h2>
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>Seasons: {show.seasons}</span>
+          <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
         </div>
-      ))}
-    </div>
+      </div>
+    </Link>
   );
 };
 
