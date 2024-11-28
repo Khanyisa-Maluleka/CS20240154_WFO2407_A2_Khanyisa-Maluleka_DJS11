@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-dom/client';
+import { useParams } from 'react-router-dom';
+
 
 const ShowDetails = () => {
   const { showId } = useParams();
