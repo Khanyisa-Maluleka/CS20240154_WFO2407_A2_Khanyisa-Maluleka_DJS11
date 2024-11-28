@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import Api from "./components/Api.jsx"
+import {fetchShowPreviews} from "./api.js"
 
 function App() {
   return (
