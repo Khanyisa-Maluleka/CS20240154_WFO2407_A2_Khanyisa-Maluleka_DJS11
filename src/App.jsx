@@ -1,11 +1,15 @@
 import React from 'react'
 import './App.css'
-import './components/ShowPreview'
+//import './components/ShowPreview'
 import ShowPreview from './components/ShowPreview'
+import ShowDetails from './components/ShowDetails'
 
 function App() {
   return (
-    <ShowPreview />
+    <div>
+      <ShowPreview />
+      <ShowDetails  />
+    </div>
   );
 }
 
