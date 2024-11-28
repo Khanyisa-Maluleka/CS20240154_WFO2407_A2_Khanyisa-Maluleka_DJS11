@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 
 const ShowDetails = () => {
-  const { showId } = useParams();
+  const { showId } = Number(useParams());
   const [showData, setShowData] = useState(null);
 
   useEffect(() => {
