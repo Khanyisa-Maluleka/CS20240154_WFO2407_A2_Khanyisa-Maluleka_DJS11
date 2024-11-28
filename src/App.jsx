@@ -1,6 +1,6 @@
 // src/App.jsx
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
 import { FavouritesProvider } from './context/FavouritesContext';
 
 import HomePage from './pages/HomePage';
@@ -12,22 +12,73 @@ import AudioPlayer from './components/AudioPlayer';
 import { fetchShowDetails } from './utils/api';
 import { useFavourites } from './context/FavouritesContext';
 
-function App() {
+// Create a separate component to handle show details page with loading and error states
+function ShowDetailsPage() {
   const [currentShow, setCurrentShow] = useState(null);
-  const [currentEpisode, setCurrentEpisode] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
   const { addToFavourites } = useFavourites();
-
-  const handleShowSelect = async (showId) => {
-    const show = await fetchShowDetails(showId);
-    setCurrentShow(show);
-  };
 
   const handlePlayEpisode = (episode) => {
     setCurrentEpisode(episode);
   };
 
+  useEffect(() => {
+    async function loadShowDetails() {
+      try {
+        setIsLoading(true);
+        const show = await fetchShowDetails(id);
+        
+        if (show) {
+          setCurrentShow(show);
+          setError(null);
+        } else {
+          setError(new Error('Show not found'));
+        }
+      } catch (err) {
+        console.error('Error fetching show details:', err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadShowDetails();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-2xl text-blue-600">Loading show details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-2xl text-red-600">
+          Error loading show: {error.message}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ShowDetails 
+      show={currentShow} 
+      onPlayEpisode={handlePlayEpisode}
+      onAddToFavourites={addToFavourites}
+    />
+  );
+}
+
+function App() {
+  const [currentEpisode, setCurrentEpisode] = useState(null);
+
   const handleCloseAudio = () => {
-    setCurrentEpisode(episode);
+    setCurrentEpisode(null);
   };
 
   return (
@@ -47,13 +98,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route 
             path="/show/:id" 
-            element={
-              <ShowDetails 
-                show={currentShow} 
-                onPlayEpisode={handlePlayEpisode}
-                onAddToFavourites={addToFavourites}
-              />
-            } 
+            element={<ShowDetailsPage />}
           />
           <Route 
             path="/genre/:genreId" 
