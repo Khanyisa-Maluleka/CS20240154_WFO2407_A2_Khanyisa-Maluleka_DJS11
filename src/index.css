@@ -1,49 +1,69 @@
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #f4f4f4;
-  --text-color: #333;
+  --primary-blue: #5DADE2;
+  --light-blue: #AED6F1;
+  --soft-purple: #8E44AD;
+  --pale-purple: #D2B4DE;
+  --background-white: #F4F6F7;
+  --text-color: #2C3E50;
+  --accent-color: #3498DB;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: var(--background-color);
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-white);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
   line-height: 1.6;
 }
 
-.home-page {
-  max-width: 1200px;
+.app-container {
+  background-color: var(--background-white);
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .shows-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  padding: 20px;
 }
 
 .show-preview {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-decoration: none;
   color: var(--text-color);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  border: 2px solid var(--light-blue);
+  overflow: hidden;
 }
 
 .show-preview:hover {
-  transform: scale(1.05);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border-color: var(--soft-purple);
 }
 
-.show-image {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+.genre-tag {
+  background-color: var(--light-blue);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.8em;
+  margin-right: 5px;
+}
+
+.audio-player {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .loading-spinner-container {
@@ -51,20 +71,16 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-.loading-spinner {
-  text-align: center;
+  background-color: var(--background-white);
 }
 
 .spinner-circle {
-  border: 4px solid var(--primary-color);
-  border-top: 4px solid var(--secondary-color);
+  border: 4px solid var(--soft-purple);
+  border-top: 4px solid var(--primary-blue);
   border-radius: 50%;
   width: 50px;
   height: 50px;
   animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
 }
 
 @keyframes spin {
