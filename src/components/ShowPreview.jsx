@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
-import { fetchShowPreviews } from '../api';
 
 const ShowPreview = () => {
   const [showPreviews, setShowPreviews] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchShowPreviews = async () => {
       try {
-        const data = await fetchShowPreviews();
+        const response = await fetch('https://podcast-api.netlify.app');
+        const data = await response.json();
         setShowPreviews(data);
       } catch (error) {
         console.error('Error fetching show previews:', error);
       }
     };
-    fetchData();
+    fetchShowPreviews();
   }, []);
 
   return (
