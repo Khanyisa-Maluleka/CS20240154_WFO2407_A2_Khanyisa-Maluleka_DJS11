@@ -1,4 +1,3 @@
-// FavouritesPage.jsx
 import React, { useState } from 'react';
 import { useFavourites } from '../context/FavouritesContext';
 

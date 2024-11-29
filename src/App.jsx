@@ -10,6 +10,7 @@ import AudioPlayer from './components/AudioPlayer';
 
 import { fetchShowDetails } from './utils/api';
 import { useFavourites } from './context/FavouritesContext';
+import HistoryPage from './pages/HistoryPage';
 
 function ShowDetailsPage() {
   const [currentShow, setCurrentShow] = useState(null);
@@ -88,6 +89,7 @@ function App() {
             <div className="navbar-links">
               <Link to="/" className="nav-link">Home</Link>
               <Link to="/favourites" className="nav-link">Favourites</Link>
+              <Link to="/history" className="nav-link">History</Link>
             </div>
           </div>
         </nav>
@@ -100,6 +102,7 @@ function App() {
             element={({ match }) => <ShowGenre genreId={match.params.genreId} />}
           />
           <Route path="/favourites" element={<FavouritesPage />} />
+          <Route path="/history" element={<HistoryPage />} />
         </Routes>
 
         {currentEpisode && (
