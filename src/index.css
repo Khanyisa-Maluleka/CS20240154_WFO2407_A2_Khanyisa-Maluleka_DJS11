@@ -488,4 +488,84 @@ body {
   background-color: #b91c1c; /* Equivalent to hover:bg-red-600 */
 }
 
+/* AudioPlayer Component Styles */
+
+/* Main container for the audio player */
+.audio-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #1f2937; /* Equivalent to bg-gray-800 */
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+}
+
+/* Audio information container */
+.audio-player-info {
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+
+.audio-player-title {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Progress bar */
+.audio-player-progress-bar {
+  width: 100%;
+  background-color: #374151; /* Equivalent to bg-gray-700 */
+  height: 0.25rem;
+  margin-top: 0.5rem;
+  border-radius: 0.125rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.audio-player-progress {
+  height: 100%;
+  background-color: #3b82f6; /* Equivalent to bg-blue-500 */
+  width: 0%; /* Dynamically updated */
+  transition: width 0.3s ease;
+}
+
+/* Controls */
+.audio-player-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.audio-player-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.audio-player-toggle {
+  background-color: #3b82f6; /* Equivalent to bg-blue-500 */
+  color: white;
+}
+
+.audio-player-toggle:hover {
+  background-color: #2563eb; /* Equivalent to hover:bg-blue-600 */
+}
+
+.audio-player-close {
+  background-color: #ef4444; /* Equivalent to bg-red-500 */
+  color: white;
+}
+
+.audio-player-close:hover {
+  background-color: #dc2626; /* Equivalent to hover:bg-red-600 */
+}
+
+
 

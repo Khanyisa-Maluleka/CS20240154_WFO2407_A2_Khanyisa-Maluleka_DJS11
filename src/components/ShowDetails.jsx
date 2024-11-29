@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import AudioPlayer from './AudioPlayer';
 
-const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
+const ShowDetails = ({ show, onAddToFavourites }) => {
   const [selectedSeason, setSelectedSeason] = useState(null);
+  const [currentEpisode, setCurrentEpisode] = useState(null); 
 
   useEffect(() => {
     if (show && show.seasons && show.seasons.length > 0) {
-      
       setSelectedSeason(show.seasons[0]);
     }
   }, [show]);
+
+  const handlePlayEpisode = (episode) => {
+    setCurrentEpisode(episode); 
+  };
+
+  const handleClosePlayer = () => {
+    setCurrentEpisode(null);
+  };
 
   if (!show) {
     return <div>Loading...</div>;
@@ -46,15 +54,15 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
         {selectedSeason && (
           <div>
             <h3 className="episodes-heading">Episodes</h3>
-            {selectedSeason.episodes.map(episode => (
+            {selectedSeason.episodes.map((episode) => (
               <div
-                key={episode.id}
+                key={episode.episode} 
                 className="episode-item"
               >
                 <span>{episode.title}</span>
                 <div className="episode-buttons">
                   <button
-                    onClick={() => onPlayEpisode(episode)}
+                    onClick={() => handlePlayEpisode(episode)} 
                     className="play-button"
                   >
                     Play
@@ -71,6 +79,13 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
           </div>
         )}
       </div>
+
+      {currentEpisode && (
+        <AudioPlayer
+          episode={currentEpisode}
+          onClose={handleClosePlayer}
+        />
+      )}
     </div>
   );
 };

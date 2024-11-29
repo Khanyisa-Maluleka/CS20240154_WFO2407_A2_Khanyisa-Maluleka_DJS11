@@ -32,31 +32,31 @@ const AudioPlayer = ({ episode, onClose }) => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex items-center">
-      <audio 
-        ref={audioRef} 
+    <div className="audio-player">
+      <audio
+        ref={audioRef}
         src={episode.file}
         onEnded={onClose}
       />
-      <div className="flex-grow mr-4">
-        <div>{episode.title}</div>
-        <div className="w-full bg-gray-700 h-1 mt-2">
-          <div 
-            className="bg-blue-500 h-1" 
+      <div className="audio-player-info">
+        <div className="audio-player-title">{episode.title}</div>
+        <div className="audio-player-progress-bar">
+          <div
+            className="audio-player-progress"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
       </div>
-      <div>
-        <button 
-          onClick={togglePlay} 
-          className="mr-2 px-4 py-2 bg-blue-500 rounded"
+      <div className="audio-player-controls">
+        <button
+          onClick={togglePlay}
+          className="audio-player-btn audio-player-toggle"
         >
           {isPlaying ? 'Pause' : 'Play'}
         </button>
-        <button 
-          onClick={onClose} 
-          className="px-4 py-2 bg-red-500 rounded"
+        <button
+          onClick={onClose}
+          className="audio-player-btn audio-player-close"
         >
           Close
         </button>
