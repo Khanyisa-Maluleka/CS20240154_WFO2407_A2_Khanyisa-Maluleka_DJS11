@@ -1,4 +1,3 @@
-// src/pages/FavouritesPage.jsx
 import React, { useState } from 'react';
 import { useFavourites } from '../context/FavouritesContext';
 
@@ -7,7 +6,7 @@ const FavouritesPage = () => {
   const [sortOption, setSortOption] = useState('default');
 
   const sortedFavourites = React.useMemo(() => {
-    switch(sortOption) {
+    switch (sortOption) {
       case 'titleAsc':
         return [...favourites].sort((a, b) => a.title.localeCompare(b.title));
       case 'titleDesc':
@@ -20,16 +19,16 @@ const FavouritesPage = () => {
   }, [favourites, sortOption]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Favourites</h1>
+    <div className="favourites-container">
+      <h1 className="favourites-title">Favourites</h1>
       
-      <div className="mb-4">
-        <label htmlFor="sort" className="mr-2">Sort by:</label>
-        <select 
-          id="sort" 
-          value={sortOption} 
+      <div className="favourites-sort">
+        <label htmlFor="sort" className="favourites-sort-label">Sort by:</label>
+        <select
+          id="sort"
+          value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          className="p-2 border rounded"
+          className="favourites-sort-select"
         >
           <option value="default">Default</option>
           <option value="titleAsc">Title (A-Z)</option>
@@ -39,23 +38,23 @@ const FavouritesPage = () => {
       </div>
 
       {sortedFavourites.length === 0 ? (
-        <p className="text-gray-500">No favourites yet</p>
+        <p className="favourites-empty">No favourites yet</p>
       ) : (
-        <div className="space-y-4">
+        <div className="favourites-list">
           {sortedFavourites.map(episode => (
-            <div 
-              key={episode.id} 
-              className="flex justify-between items-center p-4 border rounded"
+            <div
+              key={episode.id}
+              className="favourites-item"
             >
-              <div>
-                <h3 className="font-bold">{episode.title}</h3>
-                <p className="text-sm text-gray-600">
+              <div className="favourites-item-info">
+                <h3 className="favourites-item-title">{episode.title}</h3>
+                <p className="favourites-item-date">
                   Added: {new Date(episode.addedAt).toLocaleString()}
                 </p>
               </div>
-              <button 
+              <button
                 onClick={() => removeFromFavourites(episode.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="favourites-item-remove"
               >
                 Remove
               </button>

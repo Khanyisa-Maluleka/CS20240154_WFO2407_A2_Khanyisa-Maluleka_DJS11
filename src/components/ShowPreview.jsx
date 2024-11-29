@@ -20,7 +20,7 @@ const ShowPreview = ({ show }) => {
       <div className="show-preview-content">
         <h2 className="show-preview-title">{show.title}</h2>
         <div className="show-preview-details">
-          <span>Seasons: {show.seasons}</span>
+          <span>Seasons: {show.seasons.length}</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
           <span>{genreNames.join(', ')}</span>
         </div>
