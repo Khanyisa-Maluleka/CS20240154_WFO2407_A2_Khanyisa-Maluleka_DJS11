@@ -292,3 +292,53 @@ body {
 .favourite-button:hover {
   background-color: var(--pale-purple);
 }
+
+/* Container styles for the HomePage */
+.homepage-container {
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Title for the homepage */
+.homepage-title {
+  font-size: 1.875rem; /* Equivalent to 3xl */
+  font-weight: bold;
+  margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+/* Sorting section container */
+.homepage-sort-container {
+  margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+/* Sorting label styles */
+.homepage-sort-label {
+  margin-right: 0.5rem;
+}
+
+/* Dropdown select styles */
+.homepage-sort-select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.375rem; /* Rounded corners */
+}
+
+/* Grid container for shows */
+.homepage-shows-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; /* Equivalent to gap-6 */
+}
+
+@media (min-width: 768px) {
+  .homepage-shows-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .homepage-shows-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
