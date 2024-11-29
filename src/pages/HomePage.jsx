@@ -7,13 +7,16 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const HomePage = () => {
   const [shows, setShows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOption, setSortOption] = useState('default');
+  const [sortOption, setSortOption] = useState('titleAsc');
 
   useEffect(() => {
     const loadShows = async () => {
       setIsLoading(true);
       const previews = await fetchPreviews();
-      setShows(previews);
+
+      const sortedShows = sortShowsAlphabetically(previews, true)
+
+      setShows(sortedShows);
       setIsLoading(false);
     };
 
@@ -58,8 +61,7 @@ const HomePage = () => {
           onChange={(e) => handleSort(e.target.value)}
           className="homepage-sort-select"
         >
-          <option value="default">Default</option>
-          <option value="titleAsc">Title (A-Z)</option>
+          <option value="titleAsc">Title (Default) (A-Z)</option>
           <option value="titleDesc">Title (Z-A)</option>
           <option value="recentlyUpdated">Recently Updated</option>
           <option value="oldestUpdated">Oldest Updated</option>
