@@ -22,7 +22,7 @@ const ShowPreview = ({ show }) => {
         <div className="show-preview-details">
           <span>Seasons: {show.seasons}</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
-          <span>Genres: {genreNames.join(', ')}</span>
+          <span>{genreNames.join(', ')}</span>
         </div>
       </div>
     </Link>

@@ -5,13 +5,12 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
   const [selectedSeason, setSelectedSeason] = useState(null);
 
   useEffect(() => {
-    // When show is loaded, set the first season as default
     if (show && show.seasons && show.seasons.length > 0) {
+      
       setSelectedSeason(show.seasons[0]);
     }
   }, [show]);
 
-  // If show is not loaded yet, show a loading state
   if (!show) {
     return <div>Loading...</div>;
   }
@@ -19,9 +18,9 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
   return (
     <div className="show-details-container">
       <div className="show-header">
-        <img 
-          src={show.image} 
-          alt={show.title} 
+        <img
+          src={show.image}
+          alt={show.title}
           className="show-image"
         />
         <div>
@@ -33,13 +32,13 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
       <div className="seasons-container">
         <h2 className="seasons-heading">Seasons</h2>
         <div className="season-buttons">
-          {show.seasons.map(season => (
+          {show.seasons.map((season, index) => (
             <button
-              key={season.id}
+              key={index}
               onClick={() => setSelectedSeason(season)}
-              className={`season-button ${selectedSeason?.id === season.id ? 'selected' : ''}`}
+              className={`season-button ${selectedSeason === season ? 'selected' : ''}`}
             >
-              Season {season.number}
+              Season {index + 1}
             </button>
           ))}
         </div>
@@ -48,19 +47,19 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
           <div>
             <h3 className="episodes-heading">Episodes</h3>
             {selectedSeason.episodes.map(episode => (
-              <div 
-                key={episode.id} 
+              <div
+                key={episode.id}
                 className="episode-item"
               >
                 <span>{episode.title}</span>
                 <div className="episode-buttons">
-                  <button 
+                  <button
                     onClick={() => onPlayEpisode(episode)}
                     className="play-button"
                   >
                     Play
                   </button>
-                  <button 
+                  <button
                     onClick={() => onAddToFavourites(episode)}
                     className="favourite-button"
                   >
