@@ -38,7 +38,7 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
               onClick={() => setSelectedSeason(season)}
               className={`season-button ${selectedSeason === season ? 'selected' : ''}`}
             >
-              Season {index + 1}
+              Season {index + 1} ({season.episodes.length})
             </button>
           ))}
         </div>
