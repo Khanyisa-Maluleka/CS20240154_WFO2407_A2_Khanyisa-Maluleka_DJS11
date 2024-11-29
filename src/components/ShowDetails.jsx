@@ -60,7 +60,7 @@ const ShowDetails = ({ show, onPlayEpisode, onAddToFavourites }) => {
                     Play
                   </button>
                   <button
-                    onClick={() => onAddToFavourites(episode)}
+                    onClick={() => onAddToFavourites(episode, show.id, show.title)}
                     className="favourite-button"
                   >
                     Favourite

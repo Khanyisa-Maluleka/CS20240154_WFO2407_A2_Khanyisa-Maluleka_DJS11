@@ -1,3 +1,4 @@
+// FavouritesPage.jsx
 import React, { useState } from 'react';
 import { useFavourites } from '../context/FavouritesContext';
 
@@ -13,6 +14,8 @@ const FavouritesPage = () => {
         return [...favourites].sort((a, b) => b.title.localeCompare(a.title));
       case 'recentlyAdded':
         return [...favourites].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+      case 'show':
+        return [...favourites].sort((a, b) => a.showTitle.localeCompare(b.showTitle));
       default:
         return favourites;
     }
@@ -34,6 +37,7 @@ const FavouritesPage = () => {
           <option value="titleAsc">Title (A-Z)</option>
           <option value="titleDesc">Title (Z-A)</option>
           <option value="recentlyAdded">Recently Added</option>
+          <option value="show">Show</option>
         </select>
       </div>
 
@@ -43,17 +47,18 @@ const FavouritesPage = () => {
         <div className="favourites-list">
           {sortedFavourites.map(episode => (
             <div
-              key={episode.id}
+              key={episode.uniqueId}
               className="favourites-item"
             >
               <div className="favourites-item-info">
                 <h3 className="favourites-item-title">{episode.title}</h3>
+                <p className="favourites-item-show">Show: {episode.showTitle}</p>
                 <p className="favourites-item-date">
                   Added: {new Date(episode.addedAt).toLocaleString()}
                 </p>
               </div>
               <button
-                onClick={() => removeFromFavourites(episode.id)}
+                onClick={() => removeFromFavourites(episode.uniqueId)}
                 className="favourites-item-remove"
               >
                 Remove

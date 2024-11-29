@@ -1,4 +1,4 @@
-// src/context/FavouritesContext.jsx
+// FavouritesContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const FavouritesContext = createContext();
@@ -13,18 +13,23 @@ export const FavouritesProvider = ({ children }) => {
     localStorage.setItem('podcastFavourites', JSON.stringify(favourites));
   }, [favourites]);
 
-  const addToFavourites = (episode) => {
-    const existingFavourite = favourites.find(fav => fav.id === episode.id);
+  const addToFavourites = (episode, showId, showTitle) => {
+    const uniqueId = `${showId}-${episode.episode}`;
+    const existingFavourite = favourites.find(fav => fav.uniqueId === uniqueId);
+    
     if (!existingFavourite) {
       setFavourites(prev => [...prev, {
         ...episode,
+        uniqueId,
+        showId,
+        showTitle,
         addedAt: new Date().toISOString()
       }]);
     }
   };
 
-  const removeFromFavourites = (episodeId) => {
-    setFavourites(prev => prev.filter(fav => fav.id !== episodeId));
+  const removeFromFavourites = (uniqueId) => {
+    setFavourites(prev => prev.filter(fav => fav.uniqueId !== uniqueId));
   };
 
   const sortFavourites = (sortType) => {
@@ -35,6 +40,8 @@ export const FavouritesProvider = ({ children }) => {
         return [...favourites].sort((a, b) => b.title.localeCompare(a.title));
       case 'recentlyAdded':
         return [...favourites].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+      case 'show':
+        return [...favourites].sort((a, b) => a.showTitle.localeCompare(b.showTitle));
       default:
         return favourites;
     }
