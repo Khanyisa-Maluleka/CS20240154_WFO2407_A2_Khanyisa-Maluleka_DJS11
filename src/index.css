@@ -342,3 +342,47 @@ body {
   }
 }
 
+
+/* SHOWGENRE */
+.show-genre-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Title styles */
+.show-genre-title {
+  font-size: 1.875rem; 
+  font-weight: bold;
+  margin-bottom: 1.5rem; 
+  text-align: center;
+  color: var(--text-color);
+}
+
+/* Error message styling */
+.show-genre-error {
+  font-size: 1.25rem;
+  text-align: center;
+  color: #dc2626; 
+  padding: 2rem;
+}
+
+/* Grid for displaying shows */
+.show-genre-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; 
+}
+
+@media (min-width: 768px) {
+  .show-genre-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .show-genre-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+

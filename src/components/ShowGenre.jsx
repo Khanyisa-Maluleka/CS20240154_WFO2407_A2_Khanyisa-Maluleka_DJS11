@@ -1,6 +1,6 @@
-// src/components/ShowGenre.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchGenre } from '../utils/api';
+import { genreMap } from '../utils/genreMap';
 import ShowPreview from './ShowPreview';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -12,7 +12,10 @@ const ShowGenre = ({ genreId }) => {
     const loadGenre = async () => {
       setIsLoading(true);
       const genreData = await fetchGenre(genreId);
-      setGenre(genreData);
+      setGenre({
+        name: genreMap[genreId] || 'N/A',
+        shows: genreData.shows,
+      });
       setIsLoading(false);
     };
 
@@ -24,14 +27,13 @@ const ShowGenre = ({ genreId }) => {
   }
 
   if (!genre) {
-    return <div>No genre found</div>;
+    return <div className="show-genre-error">No genre found</div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">{genre.name} Podcasts</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="show-genre-container">
+      <h1 className="show-genre-title">{genre.name} Podcasts</h1>
+      <div className="show-genre-grid">
         {genre.shows.map(show => (
           <ShowPreview key={show.id} show={show} />
         ))}
