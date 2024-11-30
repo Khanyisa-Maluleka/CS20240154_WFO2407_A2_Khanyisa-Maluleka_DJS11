@@ -7,7 +7,6 @@ export const AudioProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showId, setShowId] = useState(null);
 
-  // Handle beforeunload event when audio is playing
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isPlaying) {
