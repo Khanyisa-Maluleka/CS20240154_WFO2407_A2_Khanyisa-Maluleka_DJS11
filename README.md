@@ -1,4 +1,4 @@
-Netlify link : <>
+Netlify link : <https://674b85b8a64b3c96f969bae5--cheery-phoenix-e4bc4b.netlify.app/>
 
 **Set-up**
 The project started off with the installation of react libraries, via `npm install create@latest`
