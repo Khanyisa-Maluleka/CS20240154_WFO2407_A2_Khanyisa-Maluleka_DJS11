@@ -151,6 +151,15 @@ body {
   border-color: var(--soft-purple);
 }
 
+.genre-select {
+  padding: 0.5rem;
+  border: 2px solid var(--light-blue);
+  border-radius: 0.25rem;
+  background: white;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
 .genre-tag {
   background-color: var(--light-blue);
   color: var(--text-color);

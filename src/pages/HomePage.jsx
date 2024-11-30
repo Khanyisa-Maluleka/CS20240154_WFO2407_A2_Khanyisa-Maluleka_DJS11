@@ -11,6 +11,8 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState('titleAsc');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [availableGenres, setAvailableGenres] = useState(['All']);
   const [fuse, setFuse] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -20,7 +22,19 @@ const HomePage = () => {
       const previews = await fetchPreviews();
       const sortedShows = sortShowsAlphabetically(previews, true);
       setShows(sortedShows);
-      setFilteredShows(sortedShows);
+      
+      // Collect all unique genres
+      const genres = new Set(['All']);
+      for (const show of previews) {
+        if (show.genres && Array.isArray(show.genres)) {
+          show.genres.forEach(genre => {
+            if (genre && genre !== 'N/A') {
+              genres.add(genre);
+            }
+          });
+        }
+      }
+      setAvailableGenres(Array.from(genres).sort());
       
       // Initialize Fuse for fuzzy search
       setFuse(new Fuse(sortedShows, {
@@ -35,17 +49,34 @@ const HomePage = () => {
     loadShows();
   }, []);
 
+  // Combined filtering effect for both search and genre
   useEffect(() => {
-    if (!searchTerm) {
-      setFilteredShows(shows);
-      return;
+    let filtered = shows;
+
+    // Apply genre filter first if not 'All'
+    if (selectedGenre !== 'All') {
+      filtered = shows.filter(show => 
+        show.genres && show.genres.some(genre => 
+          String(genre).toLowerCase() === selectedGenre.toLowerCase()
+        )
+      );
     }
 
-    if (fuse) {
-      const results = fuse.search(searchTerm);
-      setFilteredShows(results.map(result => result.item));
+    // Then apply search filter if there's a search term
+    if (searchTerm && fuse) {
+      const searchResults = fuse.search(searchTerm);
+      filtered = searchResults
+        .map(result => result.item)
+        .filter(show => 
+          selectedGenre === 'All' || 
+          (show.genres && show.genres.some(genre => 
+            String(genre).toLowerCase() === selectedGenre.toLowerCase()
+          ))
+        );
     }
-  }, [searchTerm, shows, fuse]);
+
+    setFilteredShows(filtered);
+  }, [searchTerm, selectedGenre, shows, fuse]);
 
   const handleSort = (option) => {
     setSortOption(option);
@@ -107,6 +138,18 @@ const HomePage = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
+        
+        <select 
+          value={selectedGenre}
+          onChange={(e) => setSelectedGenre(e.target.value)}
+          className="genre-select"
+        >
+          {availableGenres.map(genre => (
+            <option key={genre} value={genre}>
+              {genre}
+            </option>
+          ))}
+        </select>
         
         <select 
           value={sortOption} 

@@ -16,12 +16,14 @@ const ShowPreview = ({ show, isCarousel = false }) => {
       // If we have numeric genres, fetch the full show details to get string genres
       try {
         const fullShow = await fetchShowDetails(show.id);
-        if (fullShow && fullShow.genres) {
+        if (fullShow && fullShow.genres && fullShow.genres.length > 0) {
           setGenres(fullShow.genres);
+        } else {
+          setGenres(['N/A']);
         }
       } catch (error) {
         console.error('Error loading genres:', error);
-        setGenres(show.genres?.map(g => `Genre ${g}`) || []);
+        setGenres(['N/A']);
       }
     };
 
@@ -41,10 +43,10 @@ const ShowPreview = ({ show, isCarousel = false }) => {
       <div className="show-preview-content">
         <h2 className="show-preview-title">{show.title}</h2>
         <div className="show-preview-details">
-          <span>Seasons: {show.seasons.length}</span>
+          <span>Seasons ({show.seasons})</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
           <div className="genre-tags">
-            {genres.map((genre, index) => (
+            {(genres.length === 0 ? ['N/A'] : genres).map((genre, index) => (
               <span key={index} className="genre-tag">
                 {genre}
               </span>
@@ -57,3 +59,4 @@ const ShowPreview = ({ show, isCarousel = false }) => {
 };
 
 export default ShowPreview;
+
