@@ -1,3 +1,4 @@
+// FavouritesContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const FavouritesContext = createContext();
@@ -39,8 +40,6 @@ export const FavouritesProvider = ({ children }) => {
         return [...favourites].sort((a, b) => b.title.localeCompare(a.title));
       case 'recentlyAdded':
         return [...favourites].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
-      case 'oldestAdded':
-        return [...favourites].sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
       case 'show':
         return [...favourites].sort((a, b) => a.showTitle.localeCompare(b.showTitle));
       default:
