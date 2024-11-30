@@ -1,27 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
-import { FavouritesProvider } from './context/FavouritesContext';
+import { useFavourites } from './context/FavouritesContext';
+import { useProgress } from './context/ProgressContext';
+import { useAudio } from './context/AudioContext';
 
 import HomePage from './pages/HomePage';
 import FavouritesPage from './pages/FavouritesPage';
 import ShowDetails from './components/ShowDetails';
 import ShowGenre from './components/ShowGenre';
 import AudioPlayer from './components/AudioPlayer';
+import LoadingSpinner from './components/LoadingSpinner';
 
 import { fetchShowDetails } from './utils/api';
-import { useFavourites } from './context/FavouritesContext';
-import HistoryPage from './pages/HistoryPage';
+
+const ResetButton = () => {
+  const { resetProgress } = useProgress();
+  
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to reset all your listening progress? This cannot be undone.')) {
+      resetProgress();
+    }
+  };
+  
+  return (
+    <button onClick={handleReset} className="nav-link reset-button">
+      Reset Progress
+    </button>
+  );
+};
 
 function ShowDetailsPage() {
+  const { id } = useParams();
+  const { addToFavourites } = useFavourites();
+  const { playEpisode } = useAudio();
   const [currentShow, setCurrentShow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { id } = useParams();
-  const { addToFavourites } = useFavourites();
-
-  const handlePlayEpisode = (episode) => {
-    setCurrentEpisode(episode);
-  };
 
   useEffect(() => {
     async function loadShowDetails() {
@@ -47,11 +61,7 @@ function ShowDetailsPage() {
   }, [id]);
 
   if (isLoading) {
-    return (
-      <div className="loading-screen">
-        <div className="loading-text">Loading show details...</div>
-      </div>
-    );
+    return <LoadingSpinner text="Loading show details..." />;
   }
 
   if (error) {
@@ -64,6 +74,10 @@ function ShowDetailsPage() {
     );
   }
 
+  const handlePlayEpisode = (episode) => {
+    playEpisode(episode, id);
+  };
+
   return (
     <ShowDetails
       show={currentShow}
@@ -74,11 +88,7 @@ function ShowDetailsPage() {
 }
 
 function App() {
-  const [currentEpisode, setCurrentEpisode] = useState(null);
-
-  const handleCloseAudio = () => {
-    setCurrentEpisode(null);
-  };
+  const { currentEpisode, closePlayer, isPlaying } = useAudio();
 
   return (
     <Router>
@@ -89,7 +99,7 @@ function App() {
             <div className="navbar-links">
               <Link to="/" className="nav-link">Home</Link>
               <Link to="/favourites" className="nav-link">Favourites</Link>
-              <Link to="/history" className="nav-link">History</Link>
+              <ResetButton />
             </div>
           </div>
         </nav>
@@ -97,18 +107,15 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/show/:id" element={<ShowDetailsPage />} />
-          <Route
-            path="/genre/:genreId"
-            element={({ match }) => <ShowGenre genreId={match.params.genreId} />}
-          />
+          <Route path="/genre/:genreId" element={<ShowGenre />} />
           <Route path="/favourites" element={<FavouritesPage />} />
-          <Route path="/history" element={<HistoryPage />} />
         </Routes>
 
         {currentEpisode && (
           <AudioPlayer
             episode={currentEpisode}
-            onClose={handleCloseAudio}
+            onClose={closePlayer}
+            isPlaying={isPlaying}
           />
         )}
       </div>
