@@ -4,66 +4,82 @@ import { sortShowsAlphabetically, sortShowsByUpdateDate } from '../utils/sorting
 import ShowPreview from '../components/ShowPreview';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Fuse from 'fuse.js';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const HomePage = () => {
   const [shows, setShows] = useState([]);
+  const [filteredShows, setFilteredShows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('titleAsc');
-  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const [fuse, setFuse] = useState(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
-  // Load shows and initialize Fuse for fuzzy search
   useEffect(() => {
     const loadShows = async () => {
       setIsLoading(true);
       const previews = await fetchPreviews();
       const sortedShows = sortShowsAlphabetically(previews, true);
       setShows(sortedShows);
-
+      setFilteredShows(sortedShows);
+      
+      // Initialize Fuse for fuzzy search
       setFuse(new Fuse(sortedShows, {
         keys: ['title', 'description', 'genres'],
         threshold: 0.4,
+        includeScore: true
       }));
-
+      
       setIsLoading(false);
     };
+
     loadShows();
   }, []);
 
-  // Derive filtered and sorted shows
-  const getFilteredAndSortedShows = () => {
-    let filtered = shows;
-    if (searchQuery && fuse) {
-      filtered = fuse.search(searchQuery).map(result => result.item);
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredShows(shows);
+      return;
     }
-    switch (sortOption) {
+
+    if (fuse) {
+      const results = fuse.search(searchTerm);
+      setFilteredShows(results.map(result => result.item));
+    }
+  }, [searchTerm, shows, fuse]);
+
+  const handleSort = (option) => {
+    setSortOption(option);
+    let sortedShows;
+    switch(option) {
       case 'titleAsc':
-        return sortShowsAlphabetically(filtered, true);
+        sortedShows = sortShowsAlphabetically(filteredShows, true);
+        break;
       case 'titleDesc':
-        return sortShowsAlphabetically(filtered, false);
+        sortedShows = sortShowsAlphabetically(filteredShows, false);
+        break;
       case 'recentlyUpdated':
-        return sortShowsByUpdateDate(filtered, true);
+        sortedShows = sortShowsByUpdateDate(filteredShows, true);
+        break;
       case 'oldestUpdated':
-        return sortShowsByUpdateDate(filtered, false);
+        sortedShows = sortShowsByUpdateDate(filteredShows, false);
+        break;
       default:
-        return filtered;
+        sortedShows = filteredShows;
     }
+    setFilteredShows(sortedShows);
   };
 
-  const filteredAndSortedShows = getFilteredAndSortedShows();
-
-  // Carousel logic
-  const getCarouselShows = () => filteredAndSortedShows.slice(carouselIndex, carouselIndex + 4);
-
-  const nextCarousel = () => {
-    setCarouselIndex((prev) => (prev + 4) % Math.max(filteredAndSortedShows.length, 1));
+  const getRecommendedShows = () => {
+    return shows.slice(carouselIndex, carouselIndex + 3);
   };
 
-  const prevCarousel = () => {
+  const handleNextCarousel = () => {
+    setCarouselIndex((prev) => (prev + 3) % Math.max(shows.length - 2, 1));
+  };
+
+  const handlePrevCarousel = () => {
     setCarouselIndex((prev) => 
-      prev - 4 < 0 ? Math.max(filteredAndSortedShows.length - 4, 0) : prev - 4
+      prev - 3 < 0 ? Math.max(shows.length - 3, 0) : prev - 3
     );
   };
 
@@ -73,70 +89,39 @@ const HomePage = () => {
 
   return (
     <div className="homepage-container">
-      <h1 className="homepage-title">Podcast Shows</h1>
-      
-      {/* Featured Carousel */}
-      <div className="featured-carousel">
-        <h2 className="featured-title">Featured Shows</h2>
-        <div className="carousel-container">
-          <button 
-            onClick={prevCarousel}
-            className="carousel-button carousel-button-prev"
-          >
-            <ChevronLeft className="carousel-icon" />
-          </button>
-          <div className="carousel-content">
-            <div 
-              className="carousel-track"
-              style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
-            >
-              {getCarouselShows().map(show => (
-                <div key={show.id} className="carousel-item">
-                  <ShowPreview show={show} />
-                </div>
-              ))}
-            </div>
-          </div>
-          <button 
-            onClick={nextCarousel}
-            className="carousel-button carousel-button-next"
-          >
-            <ChevronRight className="carousel-icon" />
-          </button>
+      <div className="recommendations-carousel">
+        <button onClick={handlePrevCarousel} className="carousel-button">&lt;</button>
+        <div className="carousel-content">
+          {getRecommendedShows().map(show => (
+            <ShowPreview key={show.id} show={show} isCarousel={true} />
+          ))}
         </div>
+        <button onClick={handleNextCarousel} className="carousel-button">&gt;</button>
       </div>
 
-      {/* Search and Sort Controls */}
-      <div className="homepage-controls">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search shows..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
+      <div className="search-filter-container">
+        <input
+          type="text"
+          placeholder="Search shows..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
         
-        <div className="sort-container">
-          <label htmlFor="sort" className="homepage-sort-label">Sort by:</label>
-          <select 
-            id="sort" 
-            value={sortOption} 
-            onChange={(e) => setSortOption(e.target.value)}
-            className="homepage-sort-select"
-          >
-            <option value="titleAsc">Title (A-Z)</option>
-            <option value="titleDesc">Title (Z-A)</option>
-            <option value="recentlyUpdated">Recently Updated</option>
-            <option value="oldestUpdated">Oldest Updated</option>
-          </select>
-        </div>
+        <select 
+          value={sortOption} 
+          onChange={(e) => handleSort(e.target.value)}
+          className="sort-select"
+        >
+          <option value="titleAsc">Title (A-Z)</option>
+          <option value="titleDesc">Title (Z-A)</option>
+          <option value="recentlyUpdated">Recently Updated</option>
+          <option value="oldestUpdated">Oldest Updated</option>
+        </select>
       </div>
 
-      {/* Shows Grid */}
       <div className="homepage-shows-grid">
-        {filteredAndSortedShows.map(show => (
+        {filteredShows.map(show => (
           <ShowPreview key={show.id} show={show} />
         ))}
       </div>
