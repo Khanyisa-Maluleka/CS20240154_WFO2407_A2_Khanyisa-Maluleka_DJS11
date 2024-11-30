@@ -160,14 +160,14 @@ body {
   margin-right: 5px;
 }
 
-.audio-player {
+/*.audio-player {
   background-color: var(--primary-blue);
   color: white;
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
+} */
 
 .loading-spinner-container {
   display: flex;
@@ -485,12 +485,10 @@ body {
 }
 
 .favourites-item-remove:hover {
-  background-color: #b91c1c; /* Equivalent to hover:bg-red-600 */
+  background-color: #b91c1c; 
 }
 
-/* AudioPlayer Component Styles */
 
-/* Main container for the audio player */
 .audio-player {
   position: fixed;
   bottom: 0;
@@ -505,7 +503,6 @@ body {
   z-index: 50;
 }
 
-/* Audio information container */
 .audio-player-info {
   flex-grow: 1;
   margin-right: 1rem;
@@ -516,10 +513,10 @@ body {
   font-weight: bold;
 }
 
-/* Progress bar */
+
 .audio-player-progress-bar {
   width: 100%;
-  background-color: #374151; /* Equivalent to bg-gray-700 */
+  background-color: #374151;
   height: 0.25rem;
   margin-top: 0.5rem;
   border-radius: 0.125rem;
@@ -529,12 +526,12 @@ body {
 
 .audio-player-progress {
   height: 100%;
-  background-color: #3b82f6; /* Equivalent to bg-blue-500 */
-  width: 0%; /* Dynamically updated */
+  background-color: #3b82f6; 
+  width: 0%; 
   transition: width 0.3s ease;
 }
 
-/* Controls */
+
 .audio-player-controls {
   display: flex;
   gap: 0.5rem;
@@ -550,24 +547,21 @@ body {
 }
 
 .audio-player-toggle {
-  background-color: #3b82f6; /* Equivalent to bg-blue-500 */
+  background-color: #3b82f6; 
   color: white;
 }
 
 .audio-player-toggle:hover {
-  background-color: #2563eb; /* Equivalent to hover:bg-blue-600 */
+  background-color: #2563eb; 
 }
 
 .audio-player-close {
-  background-color: #ef4444; /* Equivalent to bg-red-500 */
-  color: white;
+  background-color: #ef4444; 
 }
 
 .audio-player-close:hover {
-  background-color: #dc2626; /* Equivalent to hover:bg-red-600 */
+  background-color: #dc2626; 
 }
-
-
 
 
 /* Carousel Related Classes */
