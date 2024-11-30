@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchGenre } from '../utils/api';
-import { genreMap } from '../utils/genreMap.js';
+import { fetchShowDetails } from '../utils/api';
 
 const ShowPreview = ({ show, isCarousel = false }) => {
-  const [genreNames, setGenreNames] = useState([]);
+  const [genres, setGenres] = useState([]);
 
   useEffect(() => {
-    const loadGenreNames = async () => {
-      const genreData = await Promise.all(show.genres.map(fetchGenre));
-      setGenreNames(genreData.map(genre => genreMap[genre.id] || 'N/A'));
+    const loadGenres = async () => {
+      // If show already has string genres, use them directly
+      if (show.genres && show.genres.length > 0 && typeof show.genres[0] === 'string') {
+        setGenres(show.genres);
+        return;
+      }
+      
+      // If we have numeric genres, fetch the full show details to get string genres
+      try {
+        const fullShow = await fetchShowDetails(show.id);
+        if (fullShow && fullShow.genres) {
+          setGenres(fullShow.genres);
+        }
+      } catch (error) {
+        console.error('Error loading genres:', error);
+        setGenres(show.genres?.map(g => `Genre ${g}`) || []);
+      }
     };
-    loadGenreNames();
-  }, [show.genres]);
+
+    loadGenres();
+  }, [show.id, show.genres]);
 
   return (
     <Link 
@@ -30,7 +44,7 @@ const ShowPreview = ({ show, isCarousel = false }) => {
           <span>Seasons: {show.seasons.length}</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
           <div className="genre-tags">
-            {genreNames.map((genre, index) => (
+            {genres.map((genre, index) => (
               <span key={index} className="genre-tag">
                 {genre}
               </span>
