@@ -3,50 +3,55 @@ import { useFavourites } from '../context/FavouritesContext';
 import { useProgress } from '../context/ProgressContext';
 
 const FavouritesPage = () => {
-  const { favourites, removeFromFavourites } = useFavourites();
+  const { favourites, removeFromFavourites, sortFavourites } = useFavourites();
   const { getProgress } = useProgress();
   const [sortOption, setSortOption] = useState('default');
 
-  const groupedFavourites = React.useMemo(() => {
-    const grouped = favourites.reduce((acc, episode) => {
-      const key = `${episode.showId}-${episode.season}`;
-      if (!acc[key]) {
-        acc[key] = {
-          showTitle: episode.showTitle,
-          season: episode.season,
-          episodes: []
-        };
-      }
-      
-      const progress = getProgress(episode.episode, episode.showId);
-      acc[key].episodes.push({
-        ...episode,
-        progress
-      });
-      
-      return acc;
-    }, {});
+  // Get sorted favorites
+  const sortedFavourites = sortOption !== 'default' ? sortFavourites(sortOption) : favourites;
 
-    Object.values(grouped).forEach(group => {
-      group.episodes.sort((a, b) => {
-        switch (sortOption) {
-          case 'titleAsc':
-            return a.title.localeCompare(b.title);
-          case 'titleDesc':
-            return b.title.localeCompare(a.title);
-          case 'Oldest Added':
-            return new Date(a.addedAt) - new Date(b.addedAt);
-          case 'recentlyAdded':
-            return new Date(b.addedAt) - new Date(a.addedAt);
-          default:
-            return a.episode - b.episode;
-        }
-      });
+  // Group episodes by show after sorting
+  const groupedFavourites = sortedFavourites.reduce((acc, episode) => {
+    if (!acc[episode.showId]) {
+      acc[episode.showId] = {
+        showTitle: episode.showTitle,
+        season: episode.season,
+        showId: episode.showId,
+        latestAddedAt: episode.addedAt,
+        episodes: []
+      };
+    }
+    
+    // Update show's latest added time if this episode is more recent
+    if (new Date(episode.addedAt) > new Date(acc[episode.showId].latestAddedAt)) {
+      acc[episode.showId].latestAddedAt = episode.addedAt;
+    }
+    
+    const progress = getProgress(episode.episode, episode.showId);
+    acc[episode.showId].episodes.push({
+      ...episode,
+      progress
     });
+    
+    return acc;
+  }, {});
 
-    return Object.entries(grouped).sort((a, b) => 
-      a[1].showTitle.localeCompare(b[1].showTitle));
-  }, [favourites, sortOption, getProgress]);
+  // Convert to array and sort shows if needed
+  const showsArray = Object.values(groupedFavourites).sort((a, b) => {
+    if (sortOption === 'recentlyAdded') {
+      return new Date(b.latestAddedAt) - new Date(a.latestAddedAt);
+    }
+    if (sortOption === 'oldestAdded') {
+      return new Date(a.latestAddedAt) - new Date(b.latestAddedAt);
+    }
+    if (sortOption === 'titleAsc') {
+      return a.showTitle.localeCompare(b.showTitle);
+    }
+    if (sortOption === 'titleDesc') {
+      return b.showTitle.localeCompare(a.showTitle);
+    }
+    return 0;
+  });
 
   return (
     <div className="favourites-container">
@@ -58,24 +63,24 @@ const FavouritesPage = () => {
           onChange={(e) => setSortOption(e.target.value)}
           className="favourites-sort-select"
         >
-          <option value="default">Episode Number</option>
+          <option value="default">Default</option>
           <option value="titleAsc">Title (A-Z)</option>
           <option value="titleDesc">Title (Z-A)</option>
-          <option value="oldestAdded">Oldest Added</option>
           <option value="recentlyAdded">Recently Added</option>
+          <option value="oldestAdded">Oldest Added</option>
         </select>
       </div>
 
-      {groupedFavourites.length === 0 ? (
+      {showsArray.length === 0 ? (
         <p className="favourites-empty">No favourites yet</p>
       ) : (
         <div className="favourites-list">
-          {groupedFavourites.map(([key, group]) => (
-            <div key={key} className="show-group">
-              <h2 className="show-title">{group.showTitle}</h2>
-              <h3 className="season-title">Season {group.season}</h3>
+          {showsArray.map(showGroup => (
+            <div key={showGroup.showId} className="show-group">
+              <h2 className="show-title">{showGroup.showTitle}</h2>
+              <h3 className="season-title">Season {showGroup.season}</h3>
               <div className="episode-list">
-                {group.episodes.map(episode => (
+                {showGroup.episodes.map(episode => (
                   <div key={episode.uniqueId} className="favourites-item">
                     <div className="favourites-item-info">
                       <h4 className="episode-title">

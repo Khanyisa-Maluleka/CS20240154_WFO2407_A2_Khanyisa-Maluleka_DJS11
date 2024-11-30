@@ -14,3 +14,8 @@ In order to run the code, I ran `npm run dev`, and it gave me a link to the webp
 
 **Dependecies**
 Some other libraries I installed are `nmp infuse.js` and one for the carousel
+
+**Problems**
+The code only filters show by genre id, and not the specific gender type
+
+
