@@ -5,6 +5,7 @@ import { useProgress } from './context/ProgressContext';
 import { useAudio } from './context/AudioContext';
 
 import HomePage from './pages/HomePage';
+import CatalogPage from './pages/CatalogPage';
 import FavouritesPage from './pages/FavouritesPage';
 import ShowDetails from './components/ShowDetails';
 import ShowGenre from './components/ShowGenre';
@@ -97,7 +98,7 @@ function App() {
           <div className="navbar-container">
             <Link to="/" className="navbar-title">Podcast App</Link>
             <div className="navbar-links">
-              <Link to="/" className="nav-link">Home</Link>
+              <Link to="/catalog" className="nav-link">Discover</Link>
               <Link to="/favourites" className="nav-link">Favourites</Link>
               <ResetButton />
             </div>
@@ -106,6 +107,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/show/:id" element={<ShowDetailsPage />} />
           <Route path="/genre/:genreId" element={<ShowGenre />} />
           <Route path="/favourites" element={<FavouritesPage />} />
