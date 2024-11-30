@@ -146,7 +146,7 @@ const HomePage = () => {
         >
           {availableGenres.map(genre => (
             <option key={genre} value={genre}>
-              {genre}
+              Genre {genre}
             </option>
           ))}
         </select>
@@ -173,3 +173,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+

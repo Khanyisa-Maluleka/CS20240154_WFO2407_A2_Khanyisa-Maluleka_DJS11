@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchShowDetails } from '../utils/api';
+import LoadingSpinner from './LoadingSpinner';
 
 const ShowPreview = ({ show, isCarousel = false }) => {
   const [genres, setGenres] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const loadGenres = async () => {
-      // If show already has string genres, use them directly
-      if (show.genres && show.genres.length > 0 && typeof show.genres[0] === 'string') {
-        setGenres(show.genres);
-        return;
-      }
-      
-      // If we have numeric genres, fetch the full show details to get string genres
+      setIsLoading(true);
       try {
         const fullShow = await fetchShowDetails(show.id);
         if (fullShow && fullShow.genres && fullShow.genres.length > 0) {
@@ -24,33 +21,59 @@ const ShowPreview = ({ show, isCarousel = false }) => {
       } catch (error) {
         console.error('Error loading genres:', error);
         setGenres(['N/A']);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadGenres();
+    // Only fetch if genres are numbers
+    if (show.genres && show.genres.length > 0) {
+      if (typeof show.genres[0] === 'number') {
+        loadGenres();
+      } else {
+        setGenres(show.genres);
+        setIsLoading(false);
+      }
+    } else {
+      setGenres(['N/A']);
+      setIsLoading(false);
+    }
   }, [show.id, show.genres]);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
 
   return (
     <Link 
       to={`/show/${show.id}`} 
       className={`show-preview ${isCarousel ? 'carousel-item' : ''}`}
     >
-      <img 
-        src={show.image} 
-        alt={show.title} 
-        className="show-preview-image" 
-      />
+      <div className="image-container">
+        {!imageLoaded && <LoadingSpinner text="Loading image..." />}
+        <img 
+          src={show.image} 
+          alt={show.title} 
+          className={`show-preview-image ${imageLoaded ? 'loaded' : 'loading'}`}
+          onLoad={handleImageLoad}
+          style={{ display: imageLoaded ? 'block' : 'none' }}
+        />
+      </div>
       <div className="show-preview-content">
         <h2 className="show-preview-title">{show.title}</h2>
         <div className="show-preview-details">
           <span>Seasons ({show.seasons})</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
           <div className="genre-tags">
-            {(genres.length === 0 ? ['N/A'] : genres).map((genre, index) => (
-              <span key={index} className="genre-tag">
-                {genre}
-              </span>
-            ))}
+            {isLoading ? (
+              <LoadingSpinner text="Loading genres..." />
+            ) : (
+              genres.map((genre, index) => (
+                <span key={index} className="genre-tag">
+                  {genre}
+                </span>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -59,4 +82,3 @@ const ShowPreview = ({ show, isCarousel = false }) => {
 };
 
 export default ShowPreview;
-

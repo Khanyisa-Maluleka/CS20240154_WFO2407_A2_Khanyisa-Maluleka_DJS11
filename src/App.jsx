@@ -23,7 +23,7 @@ const ResetButton = () => {
   };
   
   return (
-    <button onClick={handleReset} className="nav-link reset-button">
+    <button onClick={handleReset} className="reset-button">
       Reset Progress
     </button>
   );

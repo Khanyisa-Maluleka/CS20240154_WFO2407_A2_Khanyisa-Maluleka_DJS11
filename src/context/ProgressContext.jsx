@@ -5,21 +5,21 @@ const ProgressContext = createContext();
 export const ProgressProvider = ({ children }) => {
   const [progress, setProgress] = useState(() => {
     const saved = localStorage.getItem('podcastProgress');
-    console.log('Initial saved progress:', saved); // Debugging log
+    console.log('Initial saved progress:', saved); 
     return saved ? JSON.parse(saved) : {};
   });
 
   useEffect(() => {
-    console.log('Persisting progress to localStorage:', progress); // Debugging log
+    console.log('Persisting progress to localStorage:', progress);
     localStorage.setItem('podcastProgress', JSON.stringify(progress));
   }, [progress]);
 
   const updateProgress = (episodeId, showId, currentTime, duration) => {
     if (isNaN(currentTime) || isNaN(duration)) {
-      console.error('Invalid progress values:', currentTime, duration); // Debugging log
+      console.error('Invalid progress values:', currentTime, duration); 
       return;
     }
-    console.log('Updating progress:', { episodeId, showId, currentTime, duration }); // Debugging log
+    console.log('Updating progress:', { episodeId, showId, currentTime, duration }); 
     setProgress((prev) => ({
       ...prev,
       [`${showId}-${episodeId}`]: {
@@ -39,12 +39,12 @@ export const ProgressProvider = ({ children }) => {
       lastPlayed: null,
       completed: false,
     };
-    console.log('Retrieving progress for:', key, savedProgress); // Debugging log
+    console.log('Retrieving progress for:', key, savedProgress); 
     return savedProgress;
   };
 
   const resetProgress = () => {
-    console.log('Resetting all progress'); // Debugging log
+    console.log('Resetting all progress'); 
     setProgress({});
     localStorage.removeItem('podcastProgress');
   };
@@ -53,7 +53,7 @@ export const ProgressProvider = ({ children }) => {
     const completed = Object.entries(progress)
       .filter(([_, value]) => value.completed)
       .map(([key]) => key);
-    console.log('Completed episodes:', completed); // Debugging log
+    console.log('Completed episodes:', completed); 
     return completed;
   };
 
