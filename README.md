@@ -1,8 +1,16 @@
-# React + Vite
+Netlify link : <>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Set-up**
+The project started off with the installation of react libraries, via `npm install create@latest`
+I cloned a repo from Github and navigated to the directory I wanted to work in
+I did `npm  install` for all other libraries that I did not have, like my json packages
+In order to run the code, I ran `npm run dev`, and it gave me a link to the webpage
 
-Currently, two official plugins are available:
+**How to use**
+-The project has been deployed to netlify, you just have to click the link that is included at the top of the page
+-If you wanna run locally, you have to - 1. Navigate to the directory the code is in
+                                         2. Run `npm run dev`
+-Then click on the link you see
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Dependecies**
+Some other libraries I installed are `nmp infuse.js` and one for the carousel
