@@ -130,7 +130,7 @@ const ShowDetails = ({ onAddToFavourites }) => {
                       onClick={() => onAddToFavourites(episode, show.id, show.title)}
                       className="favourite-button"
                     >
-                      Favourite Button
+                      Favourite
                     </button>  
                   </div>
                 </div>
