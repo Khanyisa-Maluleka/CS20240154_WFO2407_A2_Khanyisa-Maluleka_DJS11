@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchGenre } from '../utils/api';
 import { genreMap } from '../utils/genreMap.js';
 
-const ShowPreview = ({ show }) => {
+const ShowPreview = ({ show, isCarousel = false }) => {
   const [genreNames, setGenreNames] = useState([]);
 
   useEffect(() => {
@@ -15,14 +15,27 @@ const ShowPreview = ({ show }) => {
   }, [show.genres]);
 
   return (
-    <Link to={`/show/${show.id}`} className="show-preview">
-      <img src={show.image} alt={show.title} className="show-preview-image" />
+    <Link 
+      to={`/show/${show.id}`} 
+      className={`show-preview ${isCarousel ? 'carousel-item' : ''}`}
+    >
+      <img 
+        src={show.image} 
+        alt={show.title} 
+        className="show-preview-image" 
+      />
       <div className="show-preview-content">
         <h2 className="show-preview-title">{show.title}</h2>
         <div className="show-preview-details">
           <span>Seasons: {show.seasons.length}</span>
           <span>Updated: {new Date(show.updated).toLocaleDateString()}</span>
-          <span>{genreNames.join(', ')}</span>
+          <div className="genre-tags">
+            {genreNames.map((genre, index) => (
+              <span key={index} className="genre-tag">
+                {genre}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </Link>
