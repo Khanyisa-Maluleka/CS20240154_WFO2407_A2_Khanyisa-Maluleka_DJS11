@@ -31,6 +31,9 @@ const FavouritesPage = () => {
        case 'recentlyAdded':
          group.episodes.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
          break;
+      case 'oldestAdded':
+         group.episodes.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+         break;
        default:
          group.episodes.sort((a, b) => a.episode - b.episode);
      }
@@ -57,10 +60,10 @@ const FavouritesPage = () => {
          onChange={(e) => setSortOption(e.target.value)}
          className="favourites-sort-select"
        >
-         <option value="default">Episode Number</option>
          <option value="titleAsc">Title (A-Z)</option>
          <option value="titleDesc">Title (Z-A)</option>
          <option value="recentlyAdded">Recently Added</option>
+         <option value="oldestAdded">Oldest Added</option>
        </select>
      </div>
 
