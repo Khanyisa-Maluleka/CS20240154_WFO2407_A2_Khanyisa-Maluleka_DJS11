@@ -1,8 +1,8 @@
-const BASE_URL = 'https://podcast-api.netlify.app';
+const apiData = 'https://podcast-api.netlify.app';
 
 export const fetchPreviews = async () => {
   try {
-    const response = await fetch(BASE_URL);
+    const response = await fetch(apiData);
     if (!response.ok) throw new Error('Failed to fetch previews');
     return await response.json();
   } catch (error) {
@@ -13,7 +13,7 @@ export const fetchPreviews = async () => {
 
 export const fetchShowDetails = async (id) => {
   try {
-    const response = await fetch(`${BASE_URL}/id/${id}`);
+    const response = await fetch(`${apiData}/id/${id}`);
     if (!response.ok) throw new Error('Failed to fetch show details');
     return await response.json();
   } catch (error) {
@@ -24,7 +24,7 @@ export const fetchShowDetails = async (id) => {
 
 export const fetchGenre = async (genreId) => {
   try {
-    const response = await fetch(`${BASE_URL}/genre/${genreId}`);
+    const response = await fetch(`${apiData}/genre/${genreId}`);
     if (!response.ok) throw new Error('Failed to fetch genre');
     return await response.json();
   } catch (error) {
