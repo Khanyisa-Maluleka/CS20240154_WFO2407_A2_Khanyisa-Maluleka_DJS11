@@ -34,8 +34,8 @@ const FavouritesPage = () => {
             return a.title.localeCompare(b.title);
           case 'titleDesc':
             return b.title.localeCompare(a.title);
-          case 'recentlyPlayed':
-            return (b.progress?.lastPlayed || 0) - (a.progress?.lastPlayed || 0);
+          case 'Oldest Added':
+            return new Date(a.addedAt) - new Date(b.addedAt);
           case 'recentlyAdded':
             return new Date(b.addedAt) - new Date(a.addedAt);
           default:
@@ -61,7 +61,7 @@ const FavouritesPage = () => {
           <option value="default">Episode Number</option>
           <option value="titleAsc">Title (A-Z)</option>
           <option value="titleDesc">Title (Z-A)</option>
-          <option value="recentlyPlayed">Recently Played</option>
+          <option value="oldestAdded">Oldest Added</option>
           <option value="recentlyAdded">Recently Added</option>
         </select>
       </div>
