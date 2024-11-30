@@ -131,7 +131,7 @@ const ShowDetails = ({ onAddToFavourites }) => {
                       className="favourite-button"
                     >
                       Favourite
-                    </button>
+                    </button>  
                   </div>
                 </div>
               );
